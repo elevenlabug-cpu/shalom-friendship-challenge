@@ -1,0 +1,593 @@
+<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Shalom Friendship Challenge</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #16001f, #31005c, #09001a);
+    color: white;
+    min-height: 100vh;
+}
+
+.container {
+    width: 92%;
+    max-width: 520px;
+    margin: auto;
+    padding: 25px 0;
+}
+
+.card {
+    background: rgba(255,255,255,0.10);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 25px;
+    padding: 25px;
+    margin-top: 25px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+    backdrop-filter: blur(10px);
+}
+
+h1 {
+    text-align: center;
+    font-size: 30px;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    text-align: center;
+    color: #ddd;
+    line-height: 1.5;
+}
+
+button {
+    width: 100%;
+    padding: 16px;
+    margin-top: 15px;
+    border: none;
+    border-radius: 15px;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.start {
+    background: white;
+    color: #300052;
+}
+
+.option {
+    background: rgba(255,255,255,0.12);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.2);
+    text-align: left;
+}
+
+.option:hover {
+    background: rgba(255,255,255,0.25);
+}
+
+.progress-container {
+    height: 9px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 10px;
+    margin: 15px 0 25px;
+}
+
+.progress {
+    height: 100%;
+    width: 0%;
+    background: white;
+    border-radius: 10px;
+    transition: 0.4s;
+}
+
+.question-number {
+    color: #ddd;
+    font-size: 14px;
+}
+
+.question {
+    font-size: 22px;
+    line-height: 1.4;
+    margin: 15px 0 20px;
+}
+
+.hidden {
+    display: none;
+}
+
+.score {
+    text-align: center;
+    font-size: 55px;
+    font-weight: bold;
+}
+
+.result {
+    text-align: center;
+    font-size: 22px;
+    margin-top: 10px;
+}
+
+.warning {
+    text-align: center;
+    padding: 20px;
+}
+
+.small {
+    font-size: 13px;
+    color: #bbb;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.emoji {
+    font-size: 55px;
+    text-align: center;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- START SCREEN -->
+
+    <div class="card" id="startScreen">
+
+        <div class="emoji">👑</div>
+
+        <h1>SHALOM<br>FRIENDSHIP CHALLENGE</h1>
+
+        <p class="subtitle">
+            😈 You think you REALLY know Shalom?
+            <br><br>
+            There are <b>15 questions</b>.
+            <br>
+            They get harder as you go.
+            <br><br>
+            ⚠️ <b>ONE ATTEMPT.</b>
+            <br>
+            Choose your answers carefully.
+        </p>
+
+        <button class="start" onclick="startQuiz()">
+            🔵 ACCEPT THE CHALLENGE
+        </button>
+
+        <p class="small">
+            Do not refresh the page during the challenge.
+        </p>
+
+    </div>
+
+
+    <!-- QUIZ SCREEN -->
+
+    <div class="card hidden" id="quizScreen">
+
+        <div class="question-number" id="questionNumber">
+            Question 1 of 15
+        </div>
+
+        <div class="progress-container">
+            <div class="progress" id="progress"></div>
+        </div>
+
+        <div class="question" id="question"></div>
+
+        <div id="options"></div>
+
+    </div>
+
+
+    <!-- RESULT SCREEN -->
+
+    <div class="card hidden" id="resultScreen">
+
+        <div class="emoji">🏆</div>
+
+        <h1>CHALLENGE COMPLETE!</h1>
+
+        <div class="score" id="score"></div>
+
+        <div class="result" id="resultText"></div>
+
+        <p class="subtitle">
+            You have officially discovered
+            how well you know Shalom. 😈
+        </p>
+
+    </div>
+
+
+    <!-- ALREADY PLAYED -->
+
+    <div class="card hidden" id="alreadyPlayed">
+
+        <div class="emoji">🔒</div>
+
+        <h1>ONE ATTEMPT ONLY</h1>
+
+        <div class="warning">
+
+            <p>
+                You have already taken the
+                <b>Shalom Friendship Challenge.</b>
+            </p>
+
+            <p>
+                😈 Nice try... but there is no second attempt.
+            </p>
+
+            <p>
+                Your original result has been locked.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+const questions = [
+
+{
+    question: "🍽️ What is Shalom's favourite food?",
+    options: [
+        "Rice",
+        "Posho",
+        "Matooke",
+        "Chapati"
+    ],
+    answer: 1
+},
+
+{
+    question: "🎨 What is Shalom's favourite colour?",
+    options: [
+        "Blue",
+        "Black",
+        "Red",
+        "Green"
+    ],
+    answer: 2
+},
+
+{
+    question: "🎵 What kind of music vibe does Shalom prefer?",
+    options: [
+        "Motivating, cinematic instrumental",
+        "Only slow love songs",
+        "Only loud party music",
+        "Random sounds"
+    ],
+    answer: 0
+},
+
+{
+    question: "🎧 What does Shalom enjoy doing?",
+    options: [
+        "Listening to music",
+        "Sleeping all day",
+        "Avoiding music",
+        "Watching paint dry 😂"
+    ],
+    answer: 0
+},
+
+{
+    question: "😂 Which phrase is Shalom known to often use?",
+    options: [
+        "안녕하세요",
+        "아시발",
+        "감사합니다",
+        "잘자"
+    ],
+    answer: 1
+},
+
+{
+    question: "🚀 What is one of Shalom's biggest goals?",
+    options: [
+        "Becoming a professional footballer",
+        "Becoming one of the most beneficial content creators and programmers",
+        "Becoming a musician",
+        "Becoming a chef"
+    ],
+    answer: 1
+},
+
+{
+    question: "❤️ What does Shalom dislike/fear the most?",
+    options: [
+        "Being late",
+        "Becoming hated",
+        "Rain",
+        "Dark rooms"
+    ],
+    answer: 1
+},
+
+{
+    question: "😤 What is Shalom's biggest annoyance?",
+    options: [
+        "Someone eating his food",
+        "Someone using his name to perform a crime",
+        "Someone borrowing his clothes",
+        "Someone calling him early"
+    ],
+    answer: 1
+},
+
+{
+    question: "🧠 Which combination BEST describes Shalom?",
+    options: [
+        "Posho + Red + music",
+        "Rice + Blue + football",
+        "Matooke + Green + movies",
+        "Chapati + Black + gaming"
+    ],
+    answer: 0
+},
+
+{
+    question: "🔥 Which music choice would MOST likely match Shalom's vibe?",
+    options: [
+        "A motivating cinematic instrumental",
+        "A random alarm sound",
+        "Complete silence",
+        "A children's nursery rhyme"
+    ],
+    answer: 0
+},
+
+{
+    question: "🎯 Shalom has a big ambition involving TWO areas. Which TWO?",
+    options: [
+        "Sports and acting",
+        "Cooking and dancing",
+        "Content creation and programming",
+        "Politics and farming"
+    ],
+    answer: 2
+},
+
+{
+    question: "👑 If you really know Shalom, which colour should immediately come to mind?",
+    options: [
+        "Yellow",
+        "Purple",
+        "Red",
+        "White"
+    ],
+    answer: 2
+},
+
+{
+    question: "😈 Which statement is TRUE about Shalom?",
+    options: [
+        "He dislikes music",
+        "His favourite food is Posho",
+        "His favourite colour is Blue",
+        "He wants everyone to hate him"
+    ],
+    answer: 1
+},
+
+{
+    question: "💀 HARD MODE: Which combination contains ONLY things Shalom actually told you?",
+    options: [
+        "Posho + Red + listening to music",
+        "Rice + Blue + football",
+        "Matooke + Green + dancing",
+        "Pizza + Black + swimming"
+    ],
+    answer: 0
+},
+
+{
+    question: "☠️ FINAL QUESTION -- ONE CHANCE ONLY!\n\nWhich statement BEST represents Shalom?",
+    options: [
+        "He wants to become successful but doesn't care what people think.",
+        "He enjoys music, loves Posho and Red, dreams of becoming a beneficial content creator and programmer, and dislikes becoming hated.",
+        "He only cares about food and football.",
+        "He wants to avoid all creative work."
+    ],
+    answer: 1
+}
+
+];
+
+let currentQuestion = 0;
+let score = 0;
+let locked = false;
+
+
+/* CHECK WHETHER THIS DEVICE ALREADY PLAYED */
+
+window.onload = function() {
+
+    if (localStorage.getItem("shalomFriendshipCompleted") === "true") {
+
+        document.getElementById("startScreen")
+        .classList.add("hidden");
+
+        document.getElementById("alreadyPlayed")
+        .classList.remove("hidden");
+    }
+
+};
+
+
+/* START QUIZ */
+
+function startQuiz() {
+
+    if (localStorage.getItem("shalomFriendshipCompleted") === "true") {
+        return;
+    }
+
+    document.getElementById("startScreen")
+    .classList.add("hidden");
+
+    document.getElementById("quizScreen")
+    .classList.remove("hidden");
+
+    showQuestion();
+}
+
+
+/* SHOW QUESTION */
+
+function showQuestion() {
+
+    const q = questions[currentQuestion];
+
+    document.getElementById("questionNumber")
+    .innerText =
+    "Question " + (currentQuestion + 1) +
+    " of " + questions.length;
+
+    document.getElementById("question")
+    .innerText = q.question;
+
+    document.getElementById("progress")
+    .style.width =
+    ((currentQuestion) / questions.length * 100) + "%";
+
+
+    const optionsDiv =
+    document.getElementById("options");
+
+    optionsDiv.innerHTML = "";
+
+
+    q.options.forEach(function(option, index) {
+
+        const button =
+        document.createElement("button");
+
+        button.className = "option";
+
+        button.innerText =
+        String.fromCharCode(65 + index) +
+        ". " + option;
+
+        button.onclick =
+        function() {
+            selectAnswer(index);
+        };
+
+        optionsDiv.appendChild(button);
+
+    });
+
+}
+
+
+/* SELECT ANSWER */
+
+function selectAnswer(selected) {
+
+    if (locked) return;
+
+    locked = true;
+
+    if (selected === questions[currentQuestion].answer) {
+        score++;
+    }
+
+    setTimeout(function() {
+
+        currentQuestion++;
+
+        locked = false;
+
+        if (currentQuestion < questions.length) {
+
+            showQuestion();
+
+        } else {
+
+            finishQuiz();
+
+        }
+
+    }, 350);
+
+}
+
+
+/* FINISH */
+
+function finishQuiz() {
+
+    localStorage.setItem(
+        "shalomFriendshipCompleted",
+        "true"
+    );
+
+    document.getElementById("quizScreen")
+    .classList.add("hidden");
+
+    document.getElementById("resultScreen")
+    .classList.remove("hidden");
+
+
+    document.getElementById("score")
+    .innerText =
+    score + " / " + questions.length;
+
+
+    let message = "";
+
+    if (score === 15) {
+
+        message =
+        "👑 PERFECT SCORE! You REALLY know Shalom! 🔥";
+
+    } else if (score >= 12) {
+
+        message =
+        "🔥 AMAZING! You know Shalom VERY well!";
+
+    } else if (score >= 9) {
+
+        message =
+        "😎 GOOD JOB! You know Shalom pretty well.";
+
+    } else if (score >= 6) {
+
+        message =
+        "😂 Not bad... but Shalom still has secrets!";
+
+    } else {
+
+        message =
+        "💀 BROOO... Do you even know Shalom?! 😂";
+
+    }
+
+
+    document.getElementById("resultText")
+    .innerText = message;
+
+}
+
+</script>
+
+</body>
+</html>
